@@ -1,13 +1,12 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-#import User
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://mrchoidb:qlqjs112!@localhost/class01?charset=utf8'
-app.config['SQLALCHEMY_ECHO'] = True #삭제해도 될듯?
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://계정:비밀번호@localhost/class01?charset=utf8'
+app.config['SQLALCHEMY_ECHO'] = True #로그를 위한 플래그
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #수정사항 추적, 로그사용으로 불필요
 app.config['SECRET_KEY'] = 'this is secret'
 
 db = SQLAlchemy(app)
@@ -31,12 +30,8 @@ class User(db.Model):
     def __repr__(self):
         return 'userid : %s, name : %s, password : %s' % (self.userid, self.name, self.password)
 
-    def as_dict(self):
-        return {x.name: getattr(self, x.name) for x in self.__table__.columns}
-
 @app.route("/")
 def login():
-    db.create_all()
     return render_template('login.html')
 
 @app.route("/post", methods=['POST'])
@@ -44,21 +39,15 @@ def loginPost():
     userID = request.form['inputID']
     name = request.form['inputName']
     password = request.form['inputPW']
-    print("--------------------------------------check1")
-    print(name)
     user = User(userID, name, password)
     db.create_all()
-    print(db)
+    print("---------check1---")
     db.session.add(user)
     try:
         db.session.commit()
-        print("--------------------------------------check2")
-        print(user)
-        return "yes"
+        return "{}님 안녕하세요?".format(user.name)
     except:
-        print("0000000000check000")
-        print(db)
-        return "no"
+        return "no commit"
 
 
 if __name__=="__main__":
