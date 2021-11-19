@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://mrchoidb:qlqjs112!@localhost/class01?charset=utf8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://계정:비밀번호@localhost/데이테베이스공간?charset=utf8'
 app.config['SQLALCHEMY_ECHO'] = True #로그를 위한 플래그
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #수정사항 추적, 로그사용으로 불필요
 app.config['SECRET_KEY'] = 'this is secret'
