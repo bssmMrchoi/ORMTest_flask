@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://계정:비밀번호@localhost/class01?charset=utf8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://mrchoidb:qlqjs112!@localhost/class01?charset=utf8'
 app.config['SQLALCHEMY_ECHO'] = True #로그를 위한 플래그
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #수정사항 추적, 로그사용으로 불필요
 app.config['SECRET_KEY'] = 'this is secret'
@@ -30,18 +30,29 @@ class User(db.Model):
     def __repr__(self):
         return 'userid : %s, name : %s, password : %s' % (self.userid, self.name, self.password)
 
+    def getUserID(self):
+        return str(self.userid)
+
 @app.route("/")
 def login():
     return render_template('login.html')
 
-@app.route("/post", methods=['POST'])
-def loginPost():
+@app.route("/join", methods=['POST'])
+def joinPost():
     userID = request.form['inputID']
     name = request.form['inputName']
     password = request.form['inputPW']
+    retryPassword = request.form['inputREPW']
+    
+    if password != retryPassword:
+        return "비밀번호가 맞지 않습니다."
+
+    for userid in User.query.filter_by(userid=userID).all():
+        if userID == userid.getUserID():
+            return "이미 가입된 ID입니다."
+
     user = User(userID, name, password)
     db.create_all()
-    print("---------check1---")
     db.session.add(user)
     try:
         db.session.commit()
