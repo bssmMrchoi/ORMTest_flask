@@ -33,6 +33,8 @@ class User(db.Model):
     def getUserID(self):
         return str(self.userid)
 
+db.create_all()
+
 @app.route("/")
 def login():
     return render_template('login.html')
@@ -52,7 +54,6 @@ def joinPost():
             return "이미 가입된 ID입니다."
 
     user = User(userID, name, password)
-    db.create_all()
     db.session.add(user)
     try:
         db.session.commit()
